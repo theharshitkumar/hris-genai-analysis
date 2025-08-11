@@ -109,38 +109,6 @@ backend/
 
 ---
 
-## HR AI Agent workflow
-
-```mermaid
-flowchart TD
-  A["User enters question in Streamlit Chat UI"] --> B["Streamlit saves message and calls generate_answer(question, history)"]
-
-  subgraph "LangChain pipeline"
-    direction TB
-    B --> C["Build SQL generation prompt<br/>- SQL_GENERATION_SYSTEM_PROMPT<br/>- Chat history<br/>- DB schema (table_info), dialect, top_k<br/>- Tools: get_columns_descriptions, get_today_date"]
-    C --> D{"Structured LLM returns SQL query?"}
-    D -- "No" --> E["Fallback general prompt → LLM text answer"]
-    D -- "Yes" --> F["Execute SQL via QuerySQLDatabaseTool on SQLite (custom_db.db)"]
-    F --> G{"Execution error?"}
-    G -- "Yes and attempts ≤ max_retries" --> H["SQL repair prompt (schema + error + question) → Structured LLM fixes SQL"]
-    H --> F
-    G -- "Yes and attempts exceeded" --> E
-    G -- "No" --> I["Answer synthesis (question + SQL + results) → LLM final text"]
-  end
-
-  E --> J["Return final text to Streamlit"]
-  I --> J
-
-  subgraph "UI"
-    direction TB
-    J --> K["Display assistant message via st.markdown and append to session state"]
-  end
-
-  L["Sidebar checks DB file presence (custom_db.db)"] -.-> B
-```
-
----
-
 ## Troubleshooting
 
 - Custom DB not found: run `python backend/eda/insert_data.py`. The homepage shows expected paths and row counts.
