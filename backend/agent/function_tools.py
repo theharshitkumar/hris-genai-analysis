@@ -1,4 +1,3 @@
-import ast
 import json
 from datetime import datetime
 
@@ -10,25 +9,9 @@ from agent.tools_constants import COLUMNS_DESCRIPTIONS
 db = lc_providers.db
 
 
-def run_query_save_results(db, query):
-    """
-    Runs a query on the specified database and returns the results.
-
-    Args:
-        db: The database object to run the query on.
-        query: The query to be executed.
-
-    Returns:
-        A list containing the results of the query.
-    """
-    res = db.run(query)
-    res = [el for sub in ast.literal_eval(res) for el in sub]
-    return res
-
-
 def get_columns_descriptions(query: str) -> str:
     """
-    Useful to get the description of the columns in the rappel_conso_table table.
+    Useful to get the description of the columns in the table.
     """
     return json.dumps(COLUMNS_DESCRIPTIONS)
 

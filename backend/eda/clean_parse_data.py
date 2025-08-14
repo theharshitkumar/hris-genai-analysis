@@ -37,7 +37,7 @@ def _candidate_ids_for_level(
     for sql, params in queries:
         rows = cursor.execute(sql, params).fetchall()
         if rows:
-            return [r[0] for r in rows]
+            return [r[0] for r in rows]  # flatten the list of tuples
     return []
 
 
